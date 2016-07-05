@@ -1,33 +1,20 @@
-'use strict';
-
-var express = require('express');
-var routes = require('./app/routes/index.js');
-var mongoose = require('mongoose');
-var passport = require('passport');
-var session = require('express-session');
-
+var express = require("express");
 var app = express();
-require('dotenv').load();
-require('./app/config/passport')(passport);
+var port = process.env.port || 8080;
 
-mongoose.connect(process.env.MONGO_URI);
 
-app.use('/controllers', express.static(process.cwd() + '/app/controllers'));
-app.use('/public', express.static(process.cwd() + '/public'));
-app.use('/common', express.static(process.cwd() + '/app/common'));
-
-app.use(session({
-	secret: 'secretClementine',
-	resave: false,
-	saveUninitialized: true
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-
-routes(app, passport);
-
-var port = process.env.PORT || 8080;
-app.listen(port,  function () {
-	console.log('Node.js listening on port ' + port + '...');
+app.get('/', function(req, res) {
+    var conf = (req.headers['user-agent']).substring(13, 30);
+    var ip = (req.headers['x-forwarded-for']);
+    var lang = (req.headers['accept-language']).substring(0, 5);
+    res.setHeader("Content-Type", "application/json");
+    res.send(JSON.stringify({
+        "ip": ip,
+        "language": lang,
+        "configurações": conf
+    }, null, 3));
 });
+
+app.listen(port, function() {
+    console.log("I'm serving your desires.");
+})
