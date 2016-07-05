@@ -3,7 +3,7 @@ var app = express();
 var port = process.env.port || 8080;
 
 
-app.get('/', function(req, res) {
+app.get( function(req, res) {
     var conf = (req.headers['user-agent']).substring(13, 30);
     var ip = (req.headers['x-forwarded-for']);
     var lang = (req.headers['accept-language']).substring(0, 5);
